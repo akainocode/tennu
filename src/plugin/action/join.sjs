@@ -117,7 +117,6 @@ module.exports = function (client, rawf, emitter) {
 
             client.debug("PluginAction", formatc("Attempting to join %s."));
             if (typeof(channel) === 'object'){
-                
                 rawf('JOIN %s :%s', info.channel, info.password);
             }
             else {
