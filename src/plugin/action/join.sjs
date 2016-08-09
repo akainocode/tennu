@@ -11,13 +11,25 @@ module.exports = function (client, rawf, emitter) {
                 reject(new Error("No channel given to join action."));
                 return;
             }
+            var info = channel;
+             if (typeof(channel) === 'object'){
+                var joinInfo = {
+                    names: [],
+                    channel: channel.channel,
+                    nickname: client.nickname(),
+                    password: channel.password,
+                    topic: {}
+                };
+            }
+            else {
+                var joinInfo = {
+                    names: [],
+                    channel: channel,
+                    nickname: client.nickname(),
+                    topic: {}
+                };
 
-            const joinInfo = {
-                names: [],
-                channel: channel,
-                nickname: client.nickname(),
-                topic: {}
-            };
+            }
 
             // Only listen to events for the channel we care about.
             const forChannel = function (handler) {
@@ -104,7 +116,13 @@ module.exports = function (client, rawf, emitter) {
             };
 
             client.debug("PluginAction", formatc("Attempting to join %s."));
-            rawf("JOIN :%s", channel);
+            if (typeof(channel) === 'object'){
+                
+                rawf('JOIN %s :%s', info.channel, info.password);
+            }
+            else {
+                rawf('JOIN :%s', channel);
+            }
         })
         .tap(function (result) {
             emitter.emit("join", result);
